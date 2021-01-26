@@ -1,17 +1,23 @@
 ﻿Imports System.Windows.Forms.CheckedListBox
 
 Public Class Dialog1
+
     Private Sub del_Click(sender As Object, e As EventArgs) Handles Del.Click
         Dim checkeditemcollection1 As CheckedItemCollection = Me.CheckedListBox1.CheckedItems
-        Dim num1 As Integer = (checkeditemcollection1.Count - 1)
-        Dim num2 As Integer = 0
-        Do While (num2 <= num1)
-            adb("shell pm uninstall -k --user 0 " + checkeditemcollection1.Item(num2))
-            num2 = (num2 + 1)
+        For x As Integer = 0 To checkeditemcollection1.Count
 
-        Loop
+            For i As Integer = 0 To uninstall.appList.Count - 1
+                If (checkeditemcollection1.Item(x) = uninstall.appList(i)("appName")) Then
+                    adb("shell pm uninstall -k --user 0 " + uninstall.appList(i)("packageName"))
+                    Interaction.MsgBox("작업이 완료되었습니다!", MsgBoxStyle.OkOnly, MsgBoxStyle.Information)
+                    uninstall.updateList()
+                End If
+            Next
+
+
+        Next
         Interaction.MsgBox("작업이 완료되었습니다!", MsgBoxStyle.OkOnly, MsgBoxStyle.Information)
-        CheckedListBox1.Items.Remove(Me.CheckedListBox1.SelectedItem)
+        uninstall.updateList()
     End Sub
 
     Private Sub Dialog1_Closed(sender As Object, e As EventArgs) Handles Me.Closed

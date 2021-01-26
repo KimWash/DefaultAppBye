@@ -30,6 +30,7 @@ Partial Class logDialog
         '
         'console
         '
+        Me.console.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.console.Location = New System.Drawing.Point(12, 12)
         Me.console.Multiline = True
         Me.console.Name = "console"
@@ -72,6 +73,7 @@ Partial Class logDialog
         Me.Controls.Add(Me.cmd)
         Me.Controls.Add(Me.execute)
         Me.Controls.Add(Me.console)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
         Me.Name = "logDialog"
         Me.Text = "logDialog"
         Me.ResumeLayout(False)

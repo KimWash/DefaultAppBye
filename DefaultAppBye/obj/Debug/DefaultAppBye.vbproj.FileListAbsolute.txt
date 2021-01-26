@@ -17,4 +17,6 @@ C:\Users\KimWash\source\repos\DefaultAppBye\DefaultAppBye\obj\Debug\DefaultAppBy
 C:\Users\KimWash\source\repos\DefaultAppBye\DefaultAppBye\obj\Debug\DefaultAppBye.exe
 C:\Users\KimWash\source\repos\DefaultAppBye\DefaultAppBye\obj\Debug\DefaultAppBye.xml
 C:\Users\KimWash\source\repos\DefaultAppBye\DefaultAppBye\obj\Debug\DefaultAppBye.pdb
+C:\Users\KimWash\source\repos\DefaultAppBye\DefaultAppBye\bin\Debug\Newtonsoft.Json.dll
+C:\Users\KimWash\source\repos\DefaultAppBye\DefaultAppBye\bin\Debug\Newtonsoft.Json.xml
 C:\Users\KimWash\source\repos\DefaultAppBye\DefaultAppBye\obj\Debug\DefaultAppBye.vbprojAssemblyReference.cache

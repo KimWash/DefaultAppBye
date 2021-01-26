@@ -1,37 +1,94 @@
 ﻿Imports System.Windows.Forms.CheckedListBox
+Imports System.Net
+Imports System.Net.Sockets
+Imports System.Text
+Imports Newtonsoft.Json
 
 Public Class uninstall
-    Private Sub uninstall_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Dim num1 As Integer = (AppListBox.Items.Count - 1)
-        Dim num2 As Integer = 0
-        Do While (num2 <= num1)
-            AppListBox.Items.RemoveAt(0)
-            num2 = (num2 + 1)
-        Loop
-        Dim AppListString As String = adb("shell pm list packages -f")
-        'adb -s 0019cbc shell 사용
-        Dim AppListEachLines As String() = AppListString.Split(vbCrLf)
-        Dim AppList As String() = {}
-        For i As Integer = 0 To AppListEachLines.Length - 2
-            Dim splitedList As String() = Split(AppListEachLines(i), ".apk=")
-            AppListBox.Items.Add(splitedList(1))
+    Dim IP As String = "IPADDRESS"
+    Dim Port As String = 9000
+
+    Dim clientSocket As New System.Net.Sockets.TcpClient()
+
+    Dim serverEndPoint As New IPEndPoint(IPAddress.Parse(IP), Port)
+    Public Shared appList As List(Of Dictionary(Of String, String))
+
+
+    Function updateList()
+        AppListBox.Items.Clear()
+
+        Dim clientStream As NetworkStream = clientSocket.GetStream()
+        Dim encoder As New ASCIIEncoding()
+        clientSocket.ReceiveTimeout = 10000
+
+        Dim buffer() As Byte = encoder.GetBytes("request List")
+
+        clientStream.Write(buffer, 0, buffer.Length)
+
+        clientStream.Flush()
+
+        ' Receive the TcpServer.response.
+
+        ' Buffer to store the response bytes.
+        Dim data(1024) As Byte
+
+        ' String to store the response ASCII representation.
+        Dim responseData As New StringBuilder()
+        clientSocket.ReceiveBufferSize = 1024
+        Dim bytesToRead = 0
+        Debug.Print(clientStream.DataAvailable)
+        Do
+            Debug.Print(clientStream.DataAvailable)
+            bytesToRead = clientStream.Read(data, 0, data.Length)
+            responseData.Append(System.Text.Encoding.UTF8.GetString(data, 0, bytesToRead))
+        Loop While (clientStream.DataAvailable)
+
+        appList = JsonConvert.DeserializeObject(Of List(Of Dictionary(Of String, String)))(responseData.ToString)
+
+
+        For x As Integer = 0 To appList.Count - 1
+            AppListBox.Items.Add(appList(x)("appName"))
         Next
         AppListBox.Sorted = True
-    End Sub
+
+    End Function
+
     Private Sub uninstall_Closed(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Closed
         Me.Dispose()
+        clientSocket.Close()
     End Sub
     Private Sub Del_Click(ByVal sender As Object, ByVal e As EventArgs) Handles Del.Click
         Dim checkeditemcollection1 As CheckedItemCollection = Me.AppListBox.CheckedItems
-        Dim num1 As Integer = (checkeditemcollection1.Count - 1)
-        Dim num2 As Integer = 0
-        Do While (num2 <= num1)
-            adb("shell pm uninstall -k --user 0 " + checkeditemcollection1.Item(num2))
-            num2 = (num2 + 1)
+        Debug.Print(checkeditemcollection1.Count - 1)
+        Debug.Print(appList.Count - 1)
+        For x As Integer = 0 To checkeditemcollection1.Count - 1
+            If (checkeditemcollection1.Item(x).ToString().Contains("sec") Or checkeditemcollection1.Item(x).ToString().Contains("android") Or checkeditemcollection1.Item(x).ToString().Contains("knox") Or checkeditemcollection1.Item(x).ToString().Contains("lg")) Then
+                Dim res = Interaction.MsgBox("시스템 앱으로 보여 삭제하면 시스템 구동에 문제가 생길 수 있습니다. 삭제할까요?", MsgBoxStyle.YesNo, MsgBoxStyle.Information)
+                If (res = DialogResult.OK) Then
+                    For i As Integer = 0 To appList.Count - 1
+                        If (checkeditemcollection1.Item(x) = appList(i)("appName")) Then
+                            adb("shell pm uninstall -k --user 0 " + appList(i)("packageName"))
+                            Interaction.MsgBox("작업이 완료되었습니다!", MsgBoxStyle.OkOnly, MsgBoxStyle.Information)
 
-        Loop
-        Interaction.MsgBox("작업이 완료되었습니다!", MsgBoxStyle.OkOnly, MsgBoxStyle.Information)
-        AppListBox.Items.Remove(AppListBox.SelectedItem)
+                        End If
+                    Next
+                End If
+            Else
+                For i As Integer = 0 To appList.Count - 1
+                    If (checkeditemcollection1.Item(x) = appList(i)("appName")) Then
+                        adb("shell pm uninstall -k --user 0 " + appList(i)("packageName"))
+                        Interaction.MsgBox("작업이 완료되었습니다!", MsgBoxStyle.OkOnly, MsgBoxStyle.Information)
+
+                    End If
+                Next
+            End If
+
+
+
+
+        Next
+        updateList()
+
 
     End Sub
 
@@ -54,5 +111,10 @@ Public Class uninstall
         End If
     End Sub
 
+    Private Sub uninstall_Shown(sender As Object, e As EventArgs) Handles Me.Shown
+        clientSocket.Connect(serverEndPoint)
+
+        updateList()
+    End Sub
 
 End Class

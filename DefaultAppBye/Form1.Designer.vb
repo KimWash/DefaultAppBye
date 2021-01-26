@@ -22,6 +22,7 @@ Partial Class Form1
     '코드 편집기에서는 수정하지 마세요.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Me.andVer = New System.Windows.Forms.Label()
         Me.deviceLabel = New System.Windows.Forms.Label()
         Me.deviceImage = New System.Windows.Forms.PictureBox()
@@ -32,6 +33,7 @@ Partial Class Form1
         Me.codenameLabel = New System.Windows.Forms.Label()
         Me.connectionStatus = New System.Windows.Forms.Label()
         Me.ProgressBar1 = New System.Windows.Forms.ProgressBar()
+        Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
         CType(Me.deviceImage, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -103,6 +105,7 @@ Partial Class Form1
         '
         Me.uninst.AutoSize = True
         Me.uninst.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.uninst.BackColor = System.Drawing.SystemColors.ControlLight
         Me.uninst.Depth = 0
         Me.uninst.Font = New System.Drawing.Font("나눔고딕", 9.0!)
         Me.uninst.Icon = Nothing
@@ -114,7 +117,7 @@ Partial Class Form1
         Me.uninst.Size = New System.Drawing.Size(59, 36)
         Me.uninst.TabIndex = 11
         Me.uninst.Text = "앱 삭제"
-        Me.uninst.UseVisualStyleBackColor = True
+        Me.uninst.UseVisualStyleBackColor = False
         '
         'codenameLabel
         '
@@ -142,6 +145,9 @@ Partial Class Form1
         Me.ProgressBar1.Style = System.Windows.Forms.ProgressBarStyle.Marquee
         Me.ProgressBar1.TabIndex = 14
         '
+        'Timer1
+        '
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 14.0!)
@@ -160,6 +166,7 @@ Partial Class Form1
         Me.Controls.Add(Me.andVer)
         Me.Font = New System.Drawing.Font("나눔고딕", 9.0!)
         Me.Name = "Form1"
+        Me.Sizable = False
         Me.Text = "Default App Bye!"
         CType(Me.deviceImage, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
@@ -176,4 +183,5 @@ Partial Class Form1
     Friend WithEvents codenameLabel As Label
     Friend WithEvents connectionStatus As Label
     Friend WithEvents ProgressBar1 As ProgressBar
+    Friend WithEvents Timer1 As Timer
 End Class
